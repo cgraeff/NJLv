@@ -13,7 +13,7 @@
 
 #include <gsl/gsl_vector.h>
 
-#include "libdatafun/headers/AuxiliaryFunctions.h"
+#include "libdatafun/libdatafun.h"
 
 #include "CommandlineOptions.h"
 #include "Parameters.h"

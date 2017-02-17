@@ -8,8 +8,7 @@
 
 #include <math.h>
 
-#include "libdatafun/headers/Integration.h"
-#include "libdatafun/headers/RootFinding.h"
+#include "libdatafun/libdatafun.h"
 
 #include "Constants.h"
 #include "Parameters.h"

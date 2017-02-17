@@ -12,7 +12,7 @@
 #include <stdbool.h>
 #include <stdio.h>
 
-#include "libdatafun/headers/Integration.h"
+#include "libdatafun/libdatafun.h"
 
 #include "EOS.h"
 #include "FermiDiracDistributions.h"

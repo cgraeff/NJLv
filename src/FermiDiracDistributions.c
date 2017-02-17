@@ -8,7 +8,7 @@
 
 #include <math.h>
 
-#include "libdatafun/headers/Integration.h"
+#include "libdatafun/libdatafun.h"
 
 #include "Parameters.h"
 #include "FermiDiracDistributions.h"

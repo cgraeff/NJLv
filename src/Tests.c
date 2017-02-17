@@ -14,8 +14,7 @@
 
 #include <gsl/gsl_vector.h>
 
-#include "libdatafun/headers/AuxiliaryFunctions.h"
-#include "libdatafun/headers/RootFinding.h"
+#include "libdatafun/libdatafun.h"
 
 #include "EOS.h"
 #include "Parameters.h"
