@@ -75,6 +75,9 @@ int SolveFiniteTemperatureEOS(){
     if (options.verbose)
         printf("Solving gap equation and equations of state ...\n");
 
+    bool chiral_restoration = false;
+    double chemical_potential_at_chiral_restoration;
+
     // Get guesses from parameters
     double mass = parameters.simultaneous_solution.mass_guess;
     double renormalized_chemical_potential =
@@ -108,6 +111,11 @@ int SolveFiniteTemperatureEOS(){
         gsl_vector_set(renormalized_chemical_potential_vector,
                        i,
                        renormalized_chemical_potential);
+
+        if (chiral_restoration == false && mass < ZERO_MASS_TOL){
+            chiral_restoration = true;
+            chemical_potential_at_chiral_restoration = chemical_potential;
+        }
 
         double barionic_density = BarionicDensity(mass,
                                                   renormalized_chemical_potential,
@@ -160,6 +168,11 @@ int SolveFiniteTemperatureEOS(){
     }
     if (options.verbose)
         printf("\n"); // As print inside the loop doesn't use new line, we need one now
+
+    if (chiral_restoration == true){
+        printf("\tchemical potential at chiral restoration: %f\n",
+               chemical_potential_at_chiral_restoration);
+    }
 
     // Calculate energy per particle
     gsl_vector * energy_density_per_particle_vector =
