@@ -1,4 +1,4 @@
-# Quarks EOS
+# NJLv
 
 This program calculates the Equations of State for quarks according the SU(2)
 version of the NJL model. As references we use (Buballa 1996) and (Buballa 2005).
@@ -17,6 +17,18 @@ command in a terminal:
 ```
 git clone https://github.com/cgraeff/quarks_EOS.git
 ```
+A submodule `libdatafun` contains some functions that are also used in other projects.
+to be able to properly compile, after cloning, issue the following commands
+```
+git submodule init
+```
+and
+```
+git submodule update
+```
+
+Also, you may download both the program and the submodule and place the contents of
+`libdadafun` inside `NJLv/src/libdatafun/`.
 
 ## Requisites
 
@@ -34,15 +46,16 @@ installed from Homebrew. To change, edit the variables at `src/Makefile`.
 
 ## Build and run instructions
 
-Basic build (generate `qeos`executable):
+Basic build (generate `eos`executable):
 * Build with `make` in the root dir;
+* Debug builds may be generated with `make debug`;
 
 Running:
 * When executed, `qeos` will calculate the equations of state with the
   default parameterization;
 * The following options are available:
  * `-p par`: uses `par` parameters set;
- * `-t val`: uses `val` for temperature value. Must be a `double` value;
+ * `-t val`: uses `val` for temperature value. Must be a floating point (`double`) value;
  * `-l`: list available parameters set;
  * `-q`: quiet (supress information written to standard out);
  * `-d`: write results using a dir structure;
@@ -75,14 +88,7 @@ directly into `(pdf)latex`. The advantage is a much cleaner plot and proper
 `latex` equations and text in labels.
 
 ## Known limitations
-* The solution is known to crash at high values of barionic density due to
-  problems in the two dimensional root finder ("matrix is singular", "approximation to 
-  Jacobian has collapsed"). This is probably due to a specially difficult region
-  for the gap equation in the mass vs renormalized chemical potential plane.
-  	* For `BuballaR_2` set with a temperature of 10 MeV, the max value of barionic
-	  density before the calculation crashes is about 1.78 fm^{-3}
-	* For `Buballa_1` also with a temperature of 10 MeV, the max barionic density is
-	  about 2.4 fm^{-3}.
+* TODO: describe limitations here
 
 ## Code structure
 
@@ -97,11 +103,17 @@ set must be appendend to the list using `AppendParametersSetToList()`.
 To choose a parameters set, the function `SetParametersSet()` must be used. This is
 used before the calculation of the main results and if no parameters set is
 explicitly requested in the command line, the first set declared is used. Each test
-in `Tests()` (in `Tests.c`) should declare a set.
+in `RunTests()` (in `Tests.c`) should declare a set.
 
 Once set using `SetParametersSet()`, use `parameters.a_parameter` to access the
 parameters values, where `a_parameter` is one of the parameters declared in the
-struct in `Parameters.h`.
+struct in `Parameters.h`. The `a_parameter` may have sub-parameters. Just use
+more dots to access them, e.g.:
+```
+double a_value = parameters.model.bare_mass;
+```
+To see a list of the parameters in a convenient way, look at 
+`NewCopyOfParametersSetFromTemplate()`.
 
 ### Commandline options
 
@@ -111,7 +123,7 @@ The commandline options set in `CommandlineOptions.*` are globally available usi
 ### Tests
 
 Tests should be declared in the function `RunTests()` in `Tests.c`. This function is
-executed when the executable is called with `-a` option.
+executed when the executable is called with `-a` option, or using `make tests`.
 
 ### Files and paths
 
