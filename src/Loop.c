@@ -168,10 +168,34 @@ int SolveFiniteTemperatureEOS(){
     if (options.verbose)
         printf("\n"); // As print inside the loop doesn't use new line, we need one now
 
+    gsl_vector * mass_derivative_vector = gsl_vector_calloc(mass_vector->size);
     if (chiral_restoration == true){
         printf("\tchemical potential at chiral restoration: %f\n",
                chemical_potential_at_chiral_restoration);
     }
+    else if(parameters.model.bare_mass != 0.0){
+
+        // detect when $\partial^2 m / \partial \mu^2 \to 0$
+
+        for (int i = 0; i < mass_vector->size; i++){
+            double derivative = DerivativeWithOrder(2,
+                                                    chemical_potential_vector,
+                                                    mass_vector,
+                                                    i);
+
+            gsl_vector_set(mass_derivative_vector, i, derivative);
+
+            if (derivative < 0){
+                chiral_restoration = true;
+                chemical_potential_at_chiral_restoration =
+                    gsl_vector_get(chemical_potential_vector,i);
+            }
+        }
+    }
+    else{
+        printf("\tNo chiral restoration in the range.\n");
+    }
+
 
     // Calculate energy per particle
     gsl_vector * energy_density_per_particle_vector =
@@ -223,6 +247,12 @@ int SolveFiniteTemperatureEOS(){
                         chemical_potential_vector,
                         energy_density_vector);
 
+    WriteVectorsToFile ("mass_second_derivative.dat",
+                        "# chemical potential (MeV), mass second derivative with "
+                        "respect to chemical potential (MeV^{-1})\n",
+                        2,
+                        chemical_potential_vector,
+                        mass_derivative_vector);
     if (options.dirs)
         SetFilePath("output/EOS/data/");
 
