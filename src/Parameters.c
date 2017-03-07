@@ -418,7 +418,7 @@ Parameters NewCopyOfParametersSetFromTemplate()
     p.model.G_S = 2.44 * pow(CONST_HBAR_C / p.model.cutoff, 2.0);
     p.model.G_V = 0.0;
 
-    p.variables.points_number = 1000;
+    p.variables.points_number = 10000;
     p.variables.min_value = 1.0E-3;
     p.variables.max_value = 2000.0;
     p.variables.temperature = 0.0; // (MeV)
@@ -436,11 +436,11 @@ Parameters NewCopyOfParametersSetFromTemplate()
     // and renormalized chemical potential from the previous
     // iteration as new guesses. This shall work well for
     // the "stepping" evolution of a control variable.
-    p.simultaneous_solution.max_iter = 4000;
-    p.simultaneous_solution.mass_guess = 300.0; // (MeV)
+    p.simultaneous_solution.max_iter = 8000;
+    p.simultaneous_solution.mass_guess = 400.0; // (MeV)
     p.simultaneous_solution.renorm_chem_pot_guess = 400.0; //(MeV)
-    p.simultaneous_solution.abs_error = 1.0E-5;
-    p.simultaneous_solution.rel_error = 1.0E-5;
+    p.simultaneous_solution.abs_error = 1.0E-8;
+    p.simultaneous_solution.rel_error = 1.0E-8;
 
     // When the mass is zero, we reach a special path
     // to solve with one dimension only. The bounds are

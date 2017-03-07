@@ -169,6 +169,8 @@ int SolveFiniteTemperatureEOS(){
         printf("\n"); // As print inside the loop doesn't use new line, we need one now
 
     gsl_vector * mass_derivative_vector = gsl_vector_calloc(mass_vector->size);
+    gsl_vector * mass_derivative2_vector = gsl_vector_calloc(mass_vector->size);
+
     if (chiral_restoration == true){
         printf("\tchemical potential at chiral restoration: %f\n",
                chemical_potential_at_chiral_restoration);
@@ -178,18 +180,19 @@ int SolveFiniteTemperatureEOS(){
         // detect when $\partial^2 m / \partial \mu^2 \to 0$
 
         for (int i = 0; i < mass_vector->size; i++){
-            double derivative = DerivativeWithOrder(2,
+            double derivative = DerivativeWithOrder(1,
                                                     chemical_potential_vector,
                                                     mass_vector,
                                                     i);
 
             gsl_vector_set(mass_derivative_vector, i, derivative);
 
-            if (derivative < 0){
-                chiral_restoration = true;
-                chemical_potential_at_chiral_restoration =
-                    gsl_vector_get(chemical_potential_vector,i);
-            }
+            double derivative2 = DerivativeWithOrder(2,
+                                                     chemical_potential_vector,
+                                                     mass_vector,
+                                                     i);
+
+            gsl_vector_set(mass_derivative2_vector, i, derivative2);
         }
     }
     else{
@@ -247,12 +250,19 @@ int SolveFiniteTemperatureEOS(){
                         chemical_potential_vector,
                         energy_density_vector);
 
+    WriteVectorsToFile ("mass_first_derivative.dat",
+                        "# chemical potential (MeV), mass first derivative with "
+                        "respect to chemical potential\n",
+                        2,
+                        chemical_potential_vector,
+                        mass_derivative_vector);
+
     WriteVectorsToFile ("mass_second_derivative.dat",
                         "# chemical potential (MeV), mass second derivative with "
                         "respect to chemical potential (MeV^{-1})\n",
                         2,
                         chemical_potential_vector,
-                        mass_derivative_vector);
+                        mass_derivative2_vector);
     if (options.dirs)
         SetFilePath("output/EOS/data/");
 
