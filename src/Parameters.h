@@ -43,7 +43,7 @@ typedef struct _parameters
     VariableParameters variables;
     ModelParameters model;
 
-    VacuumMassDeterminationParameters vacuum_mass_determination;
+    UnidimensionalRootFindingParameters vacuum_mass_determination;
     SimultaneousSolutionParameters simultaneous_solution;
 
 	IntegratorParameters fermi_dirac_integrals;

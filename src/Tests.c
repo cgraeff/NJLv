@@ -410,18 +410,18 @@ void RunTests()
                     renorm_chem_pot = 0;
                 }
                 else{
-                    const double lower_bound = 1.0E-3;
-                    const double upper_bound = 1000.0;
-                    const double abs_error = 1.0E-5;
-                    const double rel_error = 1.0E-5;
-                    const double max_iter = 2000;
+
+                    const UnidimensionalRootFindingParameters p =
+                        {
+                            1.0E-3,
+                            1000.0,
+                            1.0E-5,
+                            1.0E-5,
+                            2000
+                        };
 
                     int status = UnidimensionalRootFinder(&F,
-                                                          lower_bound,
-                                                          upper_bound,
-                                                          abs_error,
-                                                          rel_error,
-                                                          max_iter,
+                                                          p,
                                                           &renorm_chem_pot);
                     if (status == -1)
                         renorm_chem_pot = 0;
@@ -514,6 +514,25 @@ void RunTests()
                                       //
         double temperature_min = 0.0;
         double temperature_max = 300.0;
+
+        UnidimensionalRootFindingParameters p =
+            {
+                1000,
+                0.0,
+                500.0,
+                1.0E-7,
+                1.0E-7,
+            };
+
+        UnidimensionalRootFindingParameters p_zero_bare_mass =
+            {
+                6000,
+                0.1,
+                500.0,
+                1.0E-7,
+                1.0E-7,
+            };
+
         double temperature_step = Step (temperature_min,
                                         temperature_max,
                                         n_pts);
@@ -537,11 +556,7 @@ void RunTests()
 
             double mass;
             int status = UnidimensionalRootFinder(&F,
-                                                  0.0,
-                                                  500.0,
-                                                  1.0E-7,
-                                                  1.0E-7,
-                                                  1000,
+                                                  p,
                                                   &mass);
             if (status == -1)
                 mass = 0;
@@ -581,11 +596,7 @@ void RunTests()
 
             if (temperature < 220.0){
                 int status = UnidimensionalRootFinder(&F,
-                                                      0.1,
-                                                      500.0,
-                                                      1.0E-7,
-                                                      1.0E-7,
-                                                      6000,
+                                                      p_zero_bare_mass,
                                                       &mass);
                 if (status == -1)
                     mass = 0;

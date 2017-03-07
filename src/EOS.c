@@ -159,9 +159,11 @@ void SimultaneousSolution(double  temperature,
         F.params = &p;
 
         // Set root bounds observing the mappings
-        ZeroMassSpecialCase zero_mass_case = parameters.simultaneous_solution.zero_mass_case;
-        double lower_bound = sqrt(zero_mass_case.renorm_chem_pot_lower_bound);
-        double upper_bound = sqrt(zero_mass_case.renorm_chem_pot_upper_bound);
+        UnidimensionalRootFindingParameters p =
+            parameters.simultaneous_solution.zero_mass_case;
+
+        p.lower_bound = sqrt(p.lower_bound);
+        p.upper_bound = sqrt(p.upper_bound);
 
         // As we are left with just one variable and one equation to solve,
         // now an one-dimensional algorithm may be employed. Otherwise,
@@ -170,11 +172,7 @@ void SimultaneousSolution(double  temperature,
         double return_result;
 
         int status = UnidimensionalRootFinder(&F,
-                                              lower_bound,
-                                              upper_bound,
-                                              zero_mass_case.abs_error,
-                                              zero_mass_case.rel_error,
-                                              zero_mass_case.max_iter,
+                                              p,
                                               &return_result);
         if (status != 0){
             printf("\nBounds do not straddle root.\n");
@@ -479,11 +477,7 @@ double VacuumMassDetermination()
     double root;
     int status =
         UnidimensionalRootFinder(&F,
-                                 parameters.vacuum_mass_determination.lower_bound,
-                                 parameters.vacuum_mass_determination.upper_bound,
-                                 parameters.vacuum_mass_determination.abs_error,
-                                 parameters.vacuum_mass_determination.rel_error,
-                                 parameters.vacuum_mass_determination.max_iterations,
+                                 parameters.vacuum_mass_determination,
                                  &root);
 
     if (status == -1){

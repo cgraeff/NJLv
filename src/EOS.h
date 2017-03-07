@@ -20,17 +20,6 @@ typedef struct _EntropyParameters{
     int integration_key;
 } EntropyParameters;
 
-// Parameters for simultaneous solution of mass and renormalized
-// chemical potential at finite temperature, as well as a special
-// case sub-struct
-typedef struct _ZeroMassSpecialCase{
-    double abs_error;
-    double rel_error;
-    double renorm_chem_pot_lower_bound;
-    double renorm_chem_pot_upper_bound;
-    int max_iter;
-} ZeroMassSpecialCase;
-
 typedef struct _SimultaneousSolutionParameters{
     int max_iter;
     double mass_guess; // (MeV)
@@ -38,21 +27,10 @@ typedef struct _SimultaneousSolutionParameters{
     double abs_error;
     double rel_error;
 
-    ZeroMassSpecialCase zero_mass_case;
+    UnidimensionalRootFindingParameters zero_mass_case;
     EntropyParameters entropy;
 
 } SimultaneousSolutionParameters;
-
-// Parameters for the determination of the vacuum mass
-// TODO: is this needed? maybe other parameters could be reused
-typedef struct _VacuumMassDeterminationParameters{
-    int max_iterations;
-    double lower_bound;
-    double upper_bound;
-    double abs_error;
-    double rel_error;
-} VacuumMassDeterminationParameters;
-
 
 void SimultaneousSolution(double temperature,
                           double chemical_potential,

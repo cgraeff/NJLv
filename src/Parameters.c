@@ -425,7 +425,6 @@ Parameters NewCopyOfParametersSetFromTemplate()
 
     // Low lower_bound but not zero, as it may be problematic if bare_mass == 0
     // upper_bound near the value of the nucleon mass.
-
     p.vacuum_mass_determination.lower_bound = 1.0E-3;
     p.vacuum_mass_determination.upper_bound = 1000.0;
     p.vacuum_mass_determination.abs_error = 1.0E-5;
@@ -433,16 +432,24 @@ Parameters NewCopyOfParametersSetFromTemplate()
     p.vacuum_mass_determination.max_iterations = 2000;
 
     // In the following, the guesses are used for the first iteration.
-    // Any subsequent iteration uses as guesses the values of mass
-    // and renormalized chemical potential from the previous iteration.
-    // This shall work well for stepping of a control variable.
+    // Any subsequent iteration uses the values of mass
+    // and renormalized chemical potential from the previous
+    // iteration as new guesses. This shall work well for
+    // the "stepping" evolution of a control variable.
     p.simultaneous_solution.max_iter = 4000;
     p.simultaneous_solution.mass_guess = 300.0; // (MeV)
     p.simultaneous_solution.renorm_chem_pot_guess = 400.0; //(MeV)
     p.simultaneous_solution.abs_error = 1.0E-5;
     p.simultaneous_solution.rel_error = 1.0E-5;
-    p.simultaneous_solution.zero_mass_case.renorm_chem_pot_lower_bound = 0.0;
-    p.simultaneous_solution.zero_mass_case.renorm_chem_pot_upper_bound = 3000;
+
+    // When the mass is zero, we reach a special path
+    // to solve with one dimension only. The bounds are
+    // for the renormalized chemical potential
+    p.simultaneous_solution.zero_mass_case.lower_bound = 0.0;
+    p.simultaneous_solution.zero_mass_case.upper_bound = 3000;
+    p.simultaneous_solution.zero_mass_case.abs_error = 1.0E-5;
+    p.simultaneous_solution.zero_mass_case.rel_error = 1.0E-5;
+    p.simultaneous_solution.zero_mass_case.max_iterations = 2000;
 
     p.fermi_dirac_integrals.lower_limit = 0.0;
     p.fermi_dirac_integrals.upper_limit = p.model.cutoff;
